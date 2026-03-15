@@ -5,159 +5,165 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Taller Loro - Servicios profesionales de mecánica y alquiler de maquinaria pesada en Chitré">
   <meta name="keywords" content="mecánica, alquiler maquinaria">
-  <!-- URL del backend (Flask en Render/Railway). Vacío = envío al mismo sitio (Flask local). -->
-  <meta name="api-base" content="" id="api-base">
-  <title>Taller Loro - Servicios de Mecánica de Equipo Pesado y Alquiler de Maquinaria</title>
+  <!-- Backend API (Render). Vacío = envío al mismo origen (Flask local). -->
+  <meta name="api-base" content="https://tallerloro.onrender.com" id="api-base">
+  <title>Taller Loro - Servicios de Mecánica y Alquiler de Maquinaria</title>
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<!-- Barra superior -->
-<div class="top-bar">
-  <span>📍 Chitré, Calle Julio Botello</span>
-  <span>📞 6733-8326</span>
-  <a href="https://www.instagram.com/tallerlorochitre/#" target="_blank" rel="noopener noreferrer">📸 Instagram</a>
-</div>
-
-<!-- Navegación -->
-<nav>
-  <div class="nav-container">
-    <a href="index.html" class="logo">Taller Loro</a>
-    <ul class="nav-links">
-      <li><a href="index.html" class="active">Inicio</a></li>
-      <li><a href="mecanica.html">Mecánica</a></li>
-      <li><a href="alquiler.html">Alquiler</a></li>
-    </ul>
+  <!-- Barra superior -->
+  <div class="top-bar">
+    <span>📍 Chitré, Calle Julio Botello</span>
+    <span>📞 6733-8326</span>
+    <a href="https://www.instagram.com/tallerlorochitre/#" target="_blank" rel="noopener noreferrer">📸 Instagram</a>
   </div>
-</nav>
 
-<header>
-  <h1>Taller Loro</h1>
-  <p>Servicios profesionales de mecánica y alquiler de maquinaria pesada</p>
-</header>
+  <!-- Navegación -->
+  <nav>
+    <div class="nav-container">
+      <a href="index.html" class="logo">Taller Loro</a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="active">Inicio</a></li>
+        <li><a href="mecanica.html">Mecánica</a></li>
+        <li><a href="alquiler.html">Alquiler</a></li>
+      </ul>
+    </div>
+  </nav>
 
-<main>
-  <section class="services">
-    
-    <a href="mecanica.html" class="service-card">
-      <h2>🔧 Servicios de Mecánica</h2>
-      <p>Mantenimiento y reparación profesional de maquinaria y vehículos. Contamos con técnicos especializados y equipos de última generación.</p>
-    </a>
+  <header>
+    <h1>Taller Loro</h1>
+    <p>Servicios profesionales de mecánica y alquiler de maquinaria pesada</p>
+  </header>
 
-    <a href="alquiler.html" class="service-card">
-      <h2>🚜 Alquiler de Maquinaria Pesada</h2>
-      <p>Retroexcavadoras, excavadoras, camiones y transporte de materiales. Soluciones completas para sus proyectos de construcción.</p>
-    </a>
+  <main>
+    <section class="services">
+      <a href="mecanica.html" class="service-card">
+        <h2>🔧 Servicios de Mecánica</h2>
+        <p>Mantenimiento y reparación profesional de maquinaria y vehículos. Contamos con técnicos especializados y equipos de última generación.</p>
+      </a>
+      <a href="alquiler.html" class="service-card">
+        <h2>🚜 Alquiler de Maquinaria Pesada</h2>
+        <p>Retroexcavadoras, excavadoras, camiones y transporte de materiales. Soluciones completas para sus proyectos de construcción.</p>
+      </a>
+    </section>
 
-  </section>
+    <section class="booking" id="citas">
+      <h2>Agenda tu cita</h2>
+      <p>Completa el formulario y te enviaremos un correo de confirmación de tu cita.</p>
 
-  <section class="booking" id="citas">
-    <h2>Agenda tu cita</h2>
-    <p>Completa el formulario y te enviaremos un correo de confirmación de tu cita.</p>
-
-    <form class="booking-form" id="form-citas" action="/api/citas" method="post">
-      <div class="form-row">
-        <div class="form-group">
-          <label for="nombre">Nombre completo *</label>
-          <input type="text" id="nombre" name="nombre" required>
+      <form class="booking-form" id="form-citas" action="/api/citas" method="post">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nombre">Nombre completo *</label>
+            <input type="text" id="nombre" name="nombre" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Correo electrónico *</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="telefono">Teléfono / WhatsApp *</label>
+            <input type="tel" id="telefono" name="telefono" required>
+          </div>
+          <div class="form-group">
+            <label for="servicio">Tipo de servicio *</label>
+            <select id="servicio" name="servicio" required>
+              <option value="">Selecciona una opción</option>
+              <option value="mecanica">Mecánica</option>
+              <option value="alquiler">Alquiler de maquinaria</option>
+              <option value="diagnostico">Diagnóstico</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="vehiculo">Vehículo / Equipo</label>
+            <input type="text" id="vehiculo" name="vehiculo" placeholder="Ej: Camión, retroexcavadora, automóvil...">
+          </div>
+          <div class="form-group">
+            <label for="placa">Placa</label>
+            <input type="text" id="placa" name="placa">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fecha">Fecha deseada *</label>
+            <input type="date" id="fecha" name="fecha" required>
+          </div>
         </div>
         <div class="form-group">
-          <label for="email">Correo electrónico *</label>
-          <input type="email" id="email" name="email" required>
+          <label for="notas">Comentario adicional</label>
+          <textarea id="notas" name="notas" rows="3" placeholder="Describe brevemente el problema o el trabajo que necesitas."></textarea>
         </div>
-      </div>
+        <button type="submit" class="btn-primary" id="btn-enviar">Enviar solicitud de cita</button>
+        <p class="booking-hint" id="mensaje-cita">* Recibirás un correo de confirmación con los datos de tu cita.</p>
+      </form>
+    </section>
+  </main>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label for="telefono">Teléfono / WhatsApp *</label>
-          <input type="tel" id="telefono" name="telefono" required>
-        </div>
-        <div class="form-group">
-          <label for="servicio">Tipo de servicio *</label>
-          <select id="servicio" name="servicio" required>
-            <option value="">Selecciona una opción</option>
-            <option value="mecanica">Mecánica</option>
-            <option value="alquiler">Alquiler de maquinaria</option>
-            <option value="diagnostico">Diagnóstico</option>
-          </select>
-        </div>
-      </div>
+  <!-- WhatsApp flotante -->
+  <a href="https://wa.me/50767338326" class="whatsapp" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp">💬</a>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label for="vehiculo">Vehículo / Equipo</label>
-          <input type="text" id="vehiculo" name="vehiculo" placeholder="Ej: Camión, retroexcavadora, automóvil...">
-        </div>
-        <div class="form-group">
-          <label for="placa">Placa</label>
-          <input type="text" id="placa" name="placa">
-        </div>
-      </div>
+  <script>
+  (function() {
+    var form = document.getElementById("form-citas");
+    var btn = document.getElementById("btn-enviar");
+    var hint = document.getElementById("mensaje-cita");
+    var meta = document.getElementById("api-base");
+    var apiBase = (meta && meta.getAttribute("content")) ? meta.getAttribute("content").trim() : "";
 
-      <div class="form-row">
-        <div class="form-group">
-          <label for="fecha">Fecha deseada *</label>
-          <input type="date" id="fecha" name="fecha" required>
-        </div>
-      </div>
+    if (!form || !btn || !hint) return;
 
-      <div class="form-group">
-        <label for="notas">Comentario adicional</label>
-        <textarea id="notas" name="notas" rows="3" placeholder="Describe brevemente el problema o el trabajo que necesitas."></textarea>
-      </div>
+    function setMessage(text, isError) {
+      hint.textContent = text;
+      hint.style.color = isError ? "#c00" : "var(--primary-color)";
+    }
 
-      <button type="submit" class="btn-primary" id="btn-enviar">Enviar solicitud de cita</button>
-      <p class="booking-hint" id="mensaje-cita">* Recibirás un correo de confirmación con los datos de tu cita.</p>
-    </form>
-  </section>
-</main>
+    form.addEventListener("submit", function(e) {
+      if (!apiBase) return;
 
-<script>
-(function() {
-  var form = document.getElementById('form-citas');
-  var btn = document.getElementById('btn-enviar');
-  var hint = document.getElementById('mensaje-cita');
-  var apiBase = (document.getElementById('api-base') && document.getElementById('api-base').getAttribute('content')) || '';
+      e.preventDefault();
+      btn.disabled = true;
+      setMessage("Enviando...", false);
 
-  if (!form) return;
+      var url = apiBase.replace(/\/$/, "") + "/api/citas";
+      var formData = new FormData(form);
 
-  form.addEventListener('submit', function(e) {
-    if (!apiBase || apiBase.trim() === '') return; // Envío normal al mismo origen (Flask local)
+      var controller = new AbortController();
+      var timeoutId = setTimeout(function() { controller.abort(); }, 45000);
 
-    e.preventDefault();
-    btn.disabled = true;
-    hint.textContent = 'Enviando...';
-    hint.style.color = '';
-
-    var url = apiBase.replace(/\/$/, '') + '/api/citas';
-    var formData = new FormData(form);
-
-    fetch(url, { method: 'POST', body: formData })
-      .then(function(r) { return r.json().then(function(j) { return { ok: r.ok, json: j }; }); })
-      .then(function(result) {
-        if (result.ok) {
-          hint.textContent = 'Solicitud enviada. Revisa tu correo para la confirmación.';
-          hint.style.color = 'var(--primary-color)';
-          form.reset();
-        } else {
-          hint.textContent = result.json.error || 'Error al enviar. Intenta de nuevo o contáctanos por WhatsApp.';
-          hint.style.color = '#c00';
-        }
-      })
-      .catch(function() {
-        hint.textContent = 'Error de conexión. Intenta de nuevo o contáctanos por WhatsApp.';
-        hint.style.color = '#c00';
-      })
-      .finally(function() { btn.disabled = false; });
-  });
-})();
-</script>
-
-<!-- Botón flotante WhatsApp -->
-<a href="https://wa.me/50767338326" class="whatsapp" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp">
-  💬
-</a>
-
+      fetch(url, { method: "POST", body: formData, signal: controller.signal })
+        .then(function(r) {
+          clearTimeout(timeoutId);
+          return r.text().then(function(text) {
+            var json = null;
+            try { json = text ? JSON.parse(text) : {}; } catch (_) { }
+            return { ok: r.ok, status: r.status, json: json };
+          });
+        })
+        .then(function(res) {
+          if (res.ok) {
+            setMessage("Solicitud enviada. Revisa tu correo para la confirmación.", false);
+            form.reset();
+          } else {
+            var msg = (res.json && res.json.error) ? res.json.error : "Error al enviar. Intenta de nuevo o contáctanos por WhatsApp.";
+            setMessage(msg, true);
+          }
+        })
+        .catch(function(err) {
+          clearTimeout(timeoutId);
+          if (err.name === "AbortError") {
+            setMessage("Tardó demasiado. Si usas Render, el servicio puede estar arrancando: abre " + apiBase + "/api/health en otra pestaña, espera 1 minuto y vuelve a intentar.", true);
+          } else {
+            setMessage("Fallo de red. Comprueba: (1) que la URL del backend sea correcta, (2) que el servicio en Render esté activo (abre " + apiBase + "/api/health para probar), (3) tu conexión. O contáctanos por WhatsApp.", true);
+          }
+        })
+        .finally(function() { btn.disabled = false; });
+    });
+  })();
+  </script>
 </body>
 </html>

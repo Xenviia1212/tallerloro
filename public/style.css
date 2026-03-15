@@ -1,3 +1,7 @@
+/* ==========================================================================
+   Taller Loro - Estilos
+   ========================================================================== */
+
 * {
   margin: 0;
   padding: 0;
@@ -18,14 +22,15 @@
 }
 
 body {
-  margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
   color: var(--text-dark);
   background-color: var(--white);
 }
 
-/* Barra superior */
+/* --------------------------------------------------------------------------
+   Barra superior
+   -------------------------------------------------------------------------- */
 .top-bar {
   background: var(--dark-bg);
   color: var(--white);
@@ -57,7 +62,9 @@ body {
   color: var(--accent-color);
 }
 
-/* Navegación */
+/* --------------------------------------------------------------------------
+   Navegación
+   -------------------------------------------------------------------------- */
 nav {
   background: var(--white);
   box-shadow: var(--shadow);
@@ -115,7 +122,9 @@ nav .nav-links a.active::after {
   background: var(--primary-color);
 }
 
-/* Header principal */
+/* --------------------------------------------------------------------------
+   Header principal
+   -------------------------------------------------------------------------- */
 header {
   padding: 4rem 1rem;
   text-align: center;
@@ -134,14 +143,18 @@ header p {
   opacity: 0.95;
 }
 
-/* Contenedor principal */
+/* --------------------------------------------------------------------------
+   Layout principal
+   -------------------------------------------------------------------------- */
 main {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem 1rem;
 }
 
-/* Sección de servicios */
+/* --------------------------------------------------------------------------
+   Tarjetas de servicios
+   -------------------------------------------------------------------------- */
 .services {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -180,7 +193,9 @@ main {
   font-size: 1rem;
 }
 
-/* Formulario de citas / contacto */
+/* --------------------------------------------------------------------------
+   Formulario de citas
+   -------------------------------------------------------------------------- */
 .booking {
   margin-top: 3rem;
   padding: 2.5rem 2rem;
@@ -271,7 +286,9 @@ main {
   color: var(--text-light);
 }
 
-/* Lista de servicios */
+/* --------------------------------------------------------------------------
+   Listas de servicios (Mecánica / Alquiler)
+   -------------------------------------------------------------------------- */
 .service-list {
   list-style: none;
   padding: 0;
@@ -294,7 +311,9 @@ main {
   box-shadow: var(--shadow-hover);
 }
 
-/* Botón de regreso */
+/* --------------------------------------------------------------------------
+   Botón volver
+   -------------------------------------------------------------------------- */
 .back-button {
   display: inline-block;
   margin-bottom: 2rem;
@@ -312,7 +331,9 @@ main {
   transform: translateX(-5px);
 }
 
-/* WhatsApp flotante */
+/* --------------------------------------------------------------------------
+   Botón flotante WhatsApp
+   -------------------------------------------------------------------------- */
 .whatsapp {
   position: fixed;
   bottom: 30px;
@@ -337,7 +358,9 @@ main {
   box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
 }
 
-/* Responsive */
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
 @media (max-width: 768px) {
   header h1 {
     font-size: 2rem;

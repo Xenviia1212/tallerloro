@@ -65,5 +65,15 @@ node_modules/
 # dotenv environment variables file
 .env
 
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+
+# Base de datos local (no subir; en Render se usa /tmp)
+taller.db
+
 # dataconnect generated files
 .dataconnect

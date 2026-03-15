@@ -19,7 +19,7 @@ En la carpeta **`public/`** deben estar todos los archivos que quieres que se si
 - `style.css`
 - `404.html` (opcional)
 
-Si cambias algo en los HTML/CSS de la raíz del proyecto, copia los cambios a `public/` antes de hacer deploy.
+Todo el sitio vive solo en `public/`. Firebase y Flask (local o Render) usan esta misma carpeta.
 
 ---
 
@@ -58,8 +58,7 @@ Para que las citas se guarden y se envíen los correos:
    - Configuración sugerida:
      - **Build command:** `pip install -r requirements.txt`
      - **Start command:** `waitress-serve --listen=0.0.0.0:$PORT app:app`
-   - En **Environment** añade las variables para el correo (y opcionalmente la BD):
-     - `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USER`, `EMAIL_PASSWORD`, etc.
+   - En **Environment** añade las variables para el correo (ver sección **Configurar correo con Gmail** más abajo).
 
 3. Render te dará una URL del backend, por ejemplo:
    - `https://taller-loro-api.onrender.com`
@@ -100,6 +99,33 @@ El formulario usa `api-base` + `/api/citas` para enviar los datos al backend.
 
 ---
 
-## 6. Nota sobre la base de datos
+## 6. Configurar correo con Gmail (para que sí lleguen los correos)
+
+Si no configuras estas variables en Render, el backend **no envía correos reales** (solo los “simula” en los logs). Para que lleguen a **xviia1212@gmail.com** (y al cliente):
+
+1. **Usa una contraseña de aplicación de Gmail** (no tu contraseña normal):
+   - Entra en tu cuenta de Google → [Seguridad](https://myaccount.google.com/security).
+   - Activa **Verificación en 2 pasos** si no está activa.
+   - Busca **Contraseñas de aplicaciones** (o “App passwords”), crea una para “Correo” / “Otro” y copia la contraseña de 16 caracteres.
+
+2. **En Render → tu Web Service → Environment**, añade:
+
+   | Variable         | Valor                    |
+   |------------------|--------------------------|
+   | `EMAIL_HOST`     | `smtp.gmail.com`         |
+   | `EMAIL_PORT`     | `587`                    |
+   | `EMAIL_USER`     | `xviia1212@gmail.com`    |
+   | `EMAIL_PASSWORD` | *(la contraseña de aplicación de 16 caracteres)* |
+   | `EMAIL_FROM`     | `xviia1212@gmail.com`    |
+   | `NOTIFY_EMAIL`   | `xviia1212@gmail.com`    |
+
+   - **NOTIFY_EMAIL**: correo donde recibes la notificación de **cada nueva cita** (por defecto ya es xviia1212@gmail.com en el código).
+   - **EMAIL_USER / EMAIL_PASSWORD**: cuenta desde la que se envían los correos (confirmación al cliente y aviso a ti).
+
+3. Guarda los cambios y deja que Render **redeploy** el servicio. Después de eso, al enviar una cita desde la web deberías recibir el correo en xviia1212@gmail.com.
+
+---
+
+## 7. Nota sobre la base de datos
 
 En Render, el sistema de archivos no es persistente. Si usas SQLite (`taller.db`), se borrará al reiniciar el servicio. Para producción conviene usar una base de datos externa (por ejemplo **PostgreSQL** en Render o **Supabase**) y cambiar `app.py` para usarla. Mientras tanto, SQLite sirve para probar que todo funcione.

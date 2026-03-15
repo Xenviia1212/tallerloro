@@ -5,7 +5,9 @@ Sirve la web estática y la API de citas (crear, finalizar) con envío de correo
 from __future__ import annotations
 
 import os
+import sys
 import sqlite3
+import traceback
 import smtplib
 from datetime import datetime
 from email.mime.text import MIMEText
@@ -21,7 +23,11 @@ from flask import Flask, abort, jsonify, make_response, request, send_file
 
 BASE_DIR = Path(__file__).resolve().parent
 PUBLIC_DIR = BASE_DIR / "public"  # Única carpeta de web estática (Firebase + Flask)
-DATABASE = BASE_DIR / "taller.db"
+# En Render el disco del proyecto es de solo lectura; usar /tmp (escribible, efímero)
+DATABASE = Path(
+    os.environ.get("DATABASE_PATH")
+    or ("/tmp/taller.db" if os.environ.get("RENDER") else str(BASE_DIR / "taller.db"))
+)
 DEFAULT_NOTIFY_EMAIL = "xviia1212@gmail.com"
 
 ALLOWED_EXTENSIONS = {
@@ -84,7 +90,7 @@ def health():
 
 def _get_connection() -> sqlite3.Connection:
     DATABASE.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(DATABASE, timeout=10.0)
+    conn = sqlite3.connect(str(DATABASE), timeout=10.0)
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -111,11 +117,6 @@ def init_db() -> None:
         conn.commit()
     finally:
         conn.close()
-
-@app.before_first_request
-def setup():
-    init_db()
-
 
 # -----------------------------------------------------------------------------
 # Archivos estáticos (rutas seguras)
@@ -266,42 +267,49 @@ def crear_cita():
     plate = data["plate"]
     notes = data["notes"]
 
-    conn = _get_connection()
     try:
-        cur = conn.execute(
-            """
-            INSERT INTO appointments (
-                name, email, phone, service_type, vehicle, plate,
-                requested_date, notes, status, created_at, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pendiente', ?, ?)
-            """,
-            (name, email, phone, service_type, vehicle, plate,
-             requested_date, notes, now, now),
+        conn = _get_connection()
+        try:
+            cur = conn.execute(
+                """
+                INSERT INTO appointments (
+                    name, email, phone, service_type, vehicle, plate,
+                    requested_date, notes, status, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pendiente', ?, ?)
+                """,
+                (name, email, phone, service_type, vehicle, plate,
+                 requested_date, notes, now, now),
+            )
+            appointment_id = cur.lastrowid
+            conn.commit()
+        finally:
+            conn.close()
+
+        # Confirmación al cliente (si falla el correo, la cita ya está guardada)
+        _send_email(
+            (email or "").strip(),
+            "Confirmación de solicitud de cita - Taller Loro",
+            _body_confirmacion_cliente(name, service_type, requested_date, phone, vehicle, plate),
         )
-        appointment_id = cur.lastrowid
-        conn.commit()
-    finally:
-        conn.close()
 
-    # Confirmación al cliente (si falla el correo, la cita ya está guardada)
-    _send_email(
-        (email or "").strip(),
-        "Confirmación de solicitud de cita - Taller Loro",
-        _body_confirmacion_cliente(name, service_type, requested_date, phone, vehicle, plate),
-    )
+        # Notificación al taller
+        notify = (os.environ.get("NOTIFY_EMAIL") or "").strip() or DEFAULT_NOTIFY_EMAIL
+        _send_email(
+            notify,
+            "Nueva cita - Taller Loro",
+            _body_notificacion_taller(
+                appointment_id, name, email, phone, service_type,
+                requested_date, vehicle, plate, notes,
+            ),
+        )
 
-    # Notificación al taller
-    notify = (os.environ.get("NOTIFY_EMAIL") or "").strip() or DEFAULT_NOTIFY_EMAIL
-    _send_email(
-        notify,
-        "Nueva cita - Taller Loro",
-        _body_notificacion_taller(
-            appointment_id, name, email, phone, service_type,
-            requested_date, vehicle, plate, notes,
-        ),
-    )
-
-    return jsonify({"ok": True, "id": appointment_id})
+        return jsonify({"ok": True, "id": appointment_id})
+    except Exception as e:
+        traceback.print_exc(file=sys.stderr)
+        return jsonify({
+            "ok": False,
+            "error": "Error interno al guardar la cita. Intenta de nuevo o contáctanos por WhatsApp.",
+        }), 500
 
 
 @app.post("/api/citas/<int:appointment_id>/finalizar")
