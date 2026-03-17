@@ -23,7 +23,7 @@ def _get_connection() -> sqlite3.Connection:
     conn = sqlite3.connect(DATABASE, timeout=10.0)
     conn.row_factory = sqlite3.Row
     return conn
-    
+
 @app.before_request
 def setup():
     init_db()
@@ -159,3 +159,6 @@ if __name__ == "__main__":
     init_db()
     app.run(debug=True)
 
+@app.get("/api/health")
+def health():
+    return {"ok": True}
