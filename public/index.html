@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Taller Loro - Servicios profesionales de mecánica y alquiler de maquinaria pesada en Chitré">
   <meta name="keywords" content="mecánica, alquiler maquinaria">
-  <!-- Backend API (Render). Vacío = envío al mismo origen (Flask local). -->
-  <meta name="api-base" content="https://tallerloro.onrender.com" id="api-base">
   <title>Taller Loro - Servicios de Mecánica y Alquiler de Maquinaria</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -107,63 +105,6 @@
   <!-- WhatsApp flotante -->
   <a href="https://wa.me/50767338326" class="whatsapp" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp">💬</a>
 
-  <script>
-  (function() {
-    var form = document.getElementById("form-citas");
-    var btn = document.getElementById("btn-enviar");
-    var hint = document.getElementById("mensaje-cita");
-    var meta = document.getElementById("api-base");
-    var apiBase = (meta && meta.getAttribute("content")) ? meta.getAttribute("content").trim() : "";
-
-    if (!form || !btn || !hint) return;
-
-    function setMessage(text, isError) {
-      hint.textContent = text;
-      hint.style.color = isError ? "#c00" : "var(--primary-color)";
-    }
-
-    form.addEventListener("submit", function(e) {
-      if (!apiBase) return;
-
-      e.preventDefault();
-      btn.disabled = true;
-      setMessage("Enviando...", false);
-
-      var url = apiBase.replace(/\/$/, "") + "/api/citas";
-      var formData = new FormData(form);
-
-      var controller = new AbortController();
-      var timeoutId = setTimeout(function() { controller.abort(); }, 45000);
-
-      fetch(url, { method: "POST", body: formData, signal: controller.signal })
-        .then(function(r) {
-          clearTimeout(timeoutId);
-          return r.text().then(function(text) {
-            var json = null;
-            try { json = text ? JSON.parse(text) : {}; } catch (_) { }
-            return { ok: r.ok, status: r.status, json: json };
-          });
-        })
-        .then(function(res) {
-          if (res.ok) {
-            setMessage("Solicitud enviada. Revisa tu correo para la confirmación.", false);
-            form.reset();
-          } else {
-            var msg = (res.json && res.json.error) ? res.json.error : "Error al enviar. Intenta de nuevo o contáctanos por WhatsApp.";
-            setMessage(msg, true);
-          }
-        })
-        .catch(function(err) {
-          clearTimeout(timeoutId);
-          if (err.name === "AbortError") {
-            setMessage("Tardó demasiado. Si usas Render, el servicio puede estar arrancando: abre " + apiBase + "/api/health en otra pestaña, espera 1 minuto y vuelve a intentar.", true);
-          } else {
-            setMessage("Fallo de red. Comprueba: (1) que la URL del backend sea correcta, (2) que el servicio en Render esté activo (abre " + apiBase + "/api/health para probar), (3) tu conexión. O contáctanos por WhatsApp.", true);
-          }
-        })
-        .finally(function() { btn.disabled = false; });
-    });
-  })();
-  </script>
+  <!-- Sin JavaScript especial: el formulario envía directo a /api/citas en Render -->
 </body>
 </html>

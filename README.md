@@ -1,42 +1,66 @@
-# Taller Loro (web) + Python (Flask)
+# Taller Loro - Flask + Render + Firebase Hosting
 
-Este proyecto es un sitio web estático (HTML/CSS) servido con una mini app de **Python + Flask**, para que puedas abrirlo desde el navegador como un sitio “real” (con URL local) y luego desplegarlo en un hosting.
+Este proyecto es un sitio web estático (HTML/CSS) con un backend en **Flask** desplegado en **Render** para guardar citas en SQLite y enviar correos de confirmación. El sitio estático se sirve desde **Firebase Hosting**.
 
-## Requisitos
+## Estructura
 
-- Python 3.10+ (recomendado)
+- `public/` → sitio web (HTML, CSS, páginas de Mecánica y Alquiler), desplegado en Firebase Hosting.
+- `app.py` → backend Flask con la ruta `POST /api/citas`, desplegado en Render.
+- `requirements.txt` → dependencias de Python para Render.
+- `firebase.json` → configuración mínima de Firebase Hosting apuntando a `public/`.
 
-## Ejecutar en tu PC (Windows)
+## Flujo de la cita
 
-Abre PowerShell en la carpeta del proyecto y corre:
+1. El cliente rellena el formulario en `public/index.html` (servido por Firebase Hosting).
+2. El formulario envía un `POST` a `https://tallerloro.onrender.com/api/citas` (servicio en Render).
+3. El backend Flask:
+   - Valida los datos.
+   - Guarda la cita en `taller.db` (SQLite).
+   - Envía un correo a `xviia1212@gmail.com` (o `NOTIFY_EMAIL`) con los datos de la cita.
+   - Envía un correo de confirmación al cliente.
 
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-python app.py
-```
+## Despliegue backend en Render
 
-Luego abre en tu navegador:
-
-- `http://localhost:5000`
-
-## Publicar (Deploy) con Python
-
-### Opción recomendada: Render (simple)
-
-1. Sube el proyecto a GitHub.
-2. En Render crea un **Web Service** desde el repo.
+1. Sube este proyecto a GitHub.
+2. Crea un **Web Service** en Render desde el repo.
 3. Configura:
    - **Build command**: `pip install -r requirements.txt`
    - **Start command**: `waitress-serve --listen=0.0.0.0:$PORT app:app`
+4. En las variables de entorno de Render configura:
+   - `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USER`, `EMAIL_PASSWORD`, `EMAIL_FROM` (para SMTP).
+   - Opcional: `NOTIFY_EMAIL` para cambiar el correo que recibe las citas.
 
-### Opción alternativa: Railway
+## Despliegue frontend en Firebase Hosting
 
-Similar: usa el mismo build y start command.
+1. Instala las herramientas de Firebase si no las tienes: `npm install -g firebase-tools`.
+2. Inicia sesión: `firebase login`.
+3. Asegúrate de tener `firebase.json` en la raíz con:
 
-## Notas
+   ```json
+   {
+     "hosting": {
+       "public": "public",
+       "ignore": [
+         "firebase.json",
+         "**/.*",
+         "**/node_modules/**"
+       ]
+     }
+   }
+   ```
 
-- Esta app sirve archivos desde la carpeta del proyecto (solo extensiones permitidas).
-- Si agregas imágenes (por ejemplo `logo.png`), funcionarán automáticamente.
+4. Ejecuta `firebase init hosting` solo si aún no has asociado este proyecto local con tu proyecto de Firebase.
+5. Despliega el sitio estático: `firebase deploy --only hosting`.
+
+## Formulario
+
+En `public/index.html`, el formulario debe tener:
+
+```html
+<form class="booking-form"
+      id="form-citas"
+      action="https://tallerloro.onrender.com/api/citas"
+      method="post">
+```
+
+con los campos `name` ya definidos (`nombre, email, telefono, servicio, vehiculo, placa, fecha, notas`).
